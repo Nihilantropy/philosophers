@@ -6,7 +6,7 @@
 /*   By: crea <crea@student.42roma.it>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 14:19:06 by crea              #+#    #+#             */
-/*   Updated: 2024/05/20 16:11:51 by crea             ###   ########.fr       */
+/*   Updated: 2024/05/22 16:47:21 by crea             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,16 +50,8 @@ int	create_philo_list(t_philo **philo, char **argv)
 	while (i < ft_atoi(argv[1]))
 	{
 		new_philo = malloc(sizeof(t_philo));
-		if (!new_philo)
-		{
-			printf(ERR_PHILO_ALLOC);
+		if (!new_philo || !init_philo(new_philo, argv, i))
 			return (0);
-		}
-		if (!init_philo(new_philo, argv, i))
-		{
-			printf(ERR_INIT_PHILO);
-			return (0);
-		}
 		if (!*philo)
 		{
 			new_philo->next = new_philo;

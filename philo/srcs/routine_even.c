@@ -6,7 +6,7 @@
 /*   By: crea <crea@student.42roma.it>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/16 15:58:03 by crea              #+#    #+#             */
-/*   Updated: 2024/05/20 16:17:44 by crea             ###   ########.fr       */
+/*   Updated: 2024/05/22 16:23:10 by crea             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,21 @@ static void	philo_actions_even(t_table *table, t_philo *current_philo)
 	return ;
 }
 
+static void	philo_routine_even_utils(t_table *table)
+{
+	long long	dinner_start;
+
+	pthread_mutex_lock(&table->is_writing);
+	table->dinner_start = get_time();
+	dinner_start = table->dinner_start;
+	printf("dinner started at %llu\n", dinner_start - dinner_start);
+	pthread_mutex_unlock(&table->is_writing);
+}
+
 void	*philo_routine_even(void *arg)
 {
-	t_table *table;
-	t_philo *current_philo;
+	t_table		*table;
+	t_philo		*current_philo;
 
 	table = (t_table *)arg;
 	if (!table)
@@ -48,14 +59,8 @@ void	*philo_routine_even(void *arg)
 	else
 		current_philo->is_thinking = true;
 	if (current_philo->index == 1)
-	{
-		pthread_mutex_lock(&table->is_writing);
-		table->dinner_start = get_time();
-		printf("dinner started at %llu\n", table->dinner_start);
-		pthread_mutex_unlock(&table->is_writing);
-	}
+		philo_routine_even_utils(table);
 	pthread_mutex_unlock(&table->is_sitting);
-	
 	philo_actions_even(table, current_philo);
 	return (NULL);
 }

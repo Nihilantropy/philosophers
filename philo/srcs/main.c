@@ -6,7 +6,7 @@
 /*   By: crea <crea@student.42roma.it>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 12:41:24 by crea              #+#    #+#             */
-/*   Updated: 2024/05/18 17:00:13 by crea             ###   ########.fr       */
+/*   Updated: 2024/05/22 17:40:53 by crea             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,8 @@ static int	choose_routine(t_table *table, pthread_t *thread)
 	int	i;
 
 	i = 0;
-	if (pthread_create(&thread[table->nbr_of_philo], NULL, observer, (void *)table))
+	if (pthread_create(&thread[table->nbr_of_philo],
+			NULL, observer, (void *)table))
 	{
 		printf(ERR_OBS_THREAD_CREATE);
 		return (0);

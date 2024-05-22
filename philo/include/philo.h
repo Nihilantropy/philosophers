@@ -6,7 +6,7 @@
 /*   By: crea <crea@student.42roma.it>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 12:27:02 by crea              #+#    #+#             */
-/*   Updated: 2024/05/20 16:12:20 by crea             ###   ########.fr       */
+/*   Updated: 2024/05/22 17:31:02 by crea             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,16 +91,33 @@ void		free_list(t_philo **philo);
 /* routines */
 void		*philo_routine_even(void *arg);
 void		*philo_routine_odd(void *arg);
+
+/* routine observer */
 void		*observer(void *arg);
+
+/* routine observer utils */
+void		check_meals_utils(t_table *table);
+void		check_death_utils(t_table *table, t_philo *current_philo,
+				long long current_time);
 
 /* routine even actions */
 void		eating_even(t_table *table, t_philo *current_philo);
 void		sleeping_even(t_table *table, t_philo *current_philo);
 void		thinking_even(t_table *table, t_philo *current_philo);
 
+/* routine even actions utils */
+void		check_first_meal_even_utils(t_table *table, t_philo *current_philo,
+				long long current_time);
+void		eating_even_utils(t_table *table, t_philo *current_philo);
+
 /* routine odd actions */
 void		eating_odd(t_table *table, t_philo *current_philo);
 void		sleeping_odd(t_table *table, t_philo *current_philo);
 void		thinking_odd(t_table *table, t_philo *current_philo);
+
+/* routine odd actions utils */
+void		check_first_meal_odd_utils(t_table *table, t_philo *current_philo,
+				long long current_time);
+void		eating_odd_utils(t_table *table, t_philo *current_philo);
 
 #endif
