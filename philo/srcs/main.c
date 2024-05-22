@@ -6,11 +6,34 @@
 /*   By: crea <crea@student.42roma.it>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 12:41:24 by crea              #+#    #+#             */
-/*   Updated: 2024/05/22 17:40:53 by crea             ###   ########.fr       */
+/*   Updated: 2024/05/22 20:03:06 by crea             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/philo.h"
+
+static int	choose_routine_utils(t_table *table, pthread_t *thread, int i)
+{
+	if (table->nbr_of_philo % 2 == 0)
+	{
+		if (pthread_create(&thread[i], NULL,
+				philo_routine_even, (void *)table))
+		{
+			printf(ERR_PHILO_THREAD_CREATE);
+			return (0);
+		}
+	}
+	else
+	{
+		if (pthread_create(&thread[i], NULL,
+				philo_routine_odd, (void *)table))
+		{
+			printf(ERR_PHILO_THREAD_CREATE);
+			return (0);
+		}
+	}
+	return (1);
+}
 
 static int	choose_routine(t_table *table, pthread_t *thread)
 {
@@ -26,24 +49,8 @@ static int	choose_routine(t_table *table, pthread_t *thread)
 	usleep(100);
 	while (i < table->nbr_of_philo)
 	{
-		if (table->nbr_of_philo % 2 == 0)
-		{
-			if (pthread_create(&thread[i], NULL,
-					philo_routine_even, (void *)table))
-			{
-				printf(ERR_PHILO_THREAD_CREATE);
-				return (0);
-			}
-		}
-		else
-		{
-			if (pthread_create(&thread[i], NULL,
-					philo_routine_odd, (void *)table))
-			{
-				printf(ERR_PHILO_THREAD_CREATE);
-				return (0);
-			}
-		}
+		if (!choose_routine_utils(table, thread, i))
+			return (0);
 		i++;
 	}
 	i = 0;

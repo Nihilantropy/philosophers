@@ -6,7 +6,7 @@
 /*   By: crea <crea@student.42roma.it>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/19 12:45:39 by crea              #+#    #+#             */
-/*   Updated: 2024/05/22 17:31:20 by crea             ###   ########.fr       */
+/*   Updated: 2024/05/22 22:09:37 by crea             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,16 +15,18 @@
 static int	check_first_meal(t_table *table, t_philo *current_philo)
 {
 	long long	current_time;
+	int			index;
 
-	if (current_philo->first_meal && current_philo->index % 2 == 0)
+	index = current_philo->index;
+	if (current_philo->first_meal
+		&& (index % 2 == 0 || index == table->nbr_of_philo))
 	{
-		pthread_mutex_lock(&table->death);
 		current_time = get_time();
 		if (current_time - table->dinner_start >= current_philo->time_to_die)
 		{
+			pthread_mutex_lock(&table->death);
 			if (table->dinner_end)
 			{
-				pthread_mutex_unlock(&table->is_writing);
 				pthread_mutex_unlock(&table->death);
 				return (0);
 			}
@@ -32,7 +34,6 @@ static int	check_first_meal(t_table *table, t_philo *current_philo)
 			pthread_mutex_unlock(&table->death);
 			return (0);
 		}
-		pthread_mutex_unlock(&table->death);
 	}
 	return (1);
 }
@@ -43,12 +44,10 @@ void	eating_odd(t_table *table, t_philo *current_philo)
 		return ;
 	pthread_mutex_lock(&current_philo->right_fork);
 	pthread_mutex_lock(&current_philo->next->right_fork);
-	pthread_mutex_lock(&current_philo->dead_lock);
 	if (!check_first_meal(table, current_philo))
 	{
 		pthread_mutex_unlock(&current_philo->right_fork);
 		pthread_mutex_unlock(&current_philo->next->right_fork);
-		pthread_mutex_unlock(&current_philo->dead_lock);
 		return ;
 	}
 	pthread_mutex_lock(&table->is_writing);
@@ -57,13 +56,11 @@ void	eating_odd(t_table *table, t_philo *current_philo)
 		pthread_mutex_unlock(&table->is_writing);
 		pthread_mutex_unlock(&current_philo->right_fork);
 		pthread_mutex_unlock(&current_philo->next->right_fork);
-		pthread_mutex_unlock(&current_philo->dead_lock);
 		return ;
 	}
 	eating_odd_utils(table, current_philo);
 	pthread_mutex_unlock(&current_philo->right_fork);
 	pthread_mutex_unlock(&current_philo->next->right_fork);
-	pthread_mutex_unlock(&current_philo->dead_lock);
 }
 
 void	sleeping_odd(t_table *table, t_philo *current_philo)
@@ -107,6 +104,8 @@ void	thinking_odd(t_table *table, t_philo *current_philo)
 	index = current_philo->index;
 	printf("%llu %d is thinking\n", current_time - dinner_start, index);
 	pthread_mutex_unlock(&table->is_writing);
+	if (current_philo->index == table->nbr_of_philo)
+		usleep(current_philo->time_to_eat * 2);
 	current_philo->is_thinking = false;
 	current_philo->is_eating = true;
 }

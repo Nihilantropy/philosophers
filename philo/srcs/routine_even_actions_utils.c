@@ -6,7 +6,7 @@
 /*   By: crea <crea@student.42roma.it>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/22 16:24:28 by crea              #+#    #+#             */
-/*   Updated: 2024/05/22 17:30:50 by crea             ###   ########.fr       */
+/*   Updated: 2024/05/22 21:46:39 by crea             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,16 @@ void	check_first_meal_even_utils(t_table *table, t_philo *current_philo,
 {
 	long long	dinner_start;
 
+	pthread_mutex_lock(&current_philo->dead_lock);
+	pthread_mutex_lock(&table->is_writing);
 	dinner_start = table->dinner_start;
 	current_philo->is_dead = true;
-	pthread_mutex_lock(&table->is_writing);
 	printf("%llu %d died\n", current_time - dinner_start, current_philo->index);
 	printf("Dinner have ended at %llu\n", current_time - table->dinner_start);
 	printf("Death at first meal check\n");
-	pthread_mutex_unlock(&table->is_writing);
 	table->dinner_end = true;
+	pthread_mutex_unlock(&current_philo->dead_lock);
+	pthread_mutex_unlock(&table->is_writing);
 }
 
 void	eating_even_utils(t_table *table, t_philo *current_philo)
@@ -40,10 +42,14 @@ void	eating_even_utils(t_table *table, t_philo *current_philo)
 	printf("%llu %d has taken a fork\n", current_time - dinner_start, index);
 	printf("%llu %d is eating\n", current_time - dinner_start, index);
 	pthread_mutex_unlock(&table->is_writing);
+	pthread_mutex_lock(&current_philo->dead_lock);
 	current_philo->last_meal = current_time;
+	pthread_mutex_unlock(&current_philo->dead_lock);
 	usleep(current_philo->time_to_eat * 1000);
+	pthread_mutex_lock(&current_philo->dead_lock);
 	if (table->nbr_of_meals != -1)
 		current_philo->current_meal++;
+	pthread_mutex_unlock(&current_philo->dead_lock);
 	current_philo->first_meal = false;
 	current_philo->is_eating = false;
 	current_philo->is_sleeping = true;

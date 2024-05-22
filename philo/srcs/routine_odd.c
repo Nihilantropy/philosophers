@@ -6,7 +6,7 @@
 /*   By: crea <crea@student.42roma.it>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/16 17:31:11 by crea              #+#    #+#             */
-/*   Updated: 2024/05/22 17:34:03 by crea             ###   ########.fr       */
+/*   Updated: 2024/05/22 20:26:49 by crea             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,13 @@ static void	philo_actions_odd(t_table *table, t_philo *current_philo)
 		return ;
 	while (1)
 	{
+		pthread_mutex_lock(&table->death);
 		if (table->dinner_end)
+		{
+			pthread_mutex_unlock(&table->death);
 			break ;
+		}
+		pthread_mutex_unlock(&table->death);
 		if (current_philo->is_eating)
 			eating_odd(table, current_philo);
 		if (current_philo->is_sleeping)
@@ -34,9 +39,10 @@ static int	check_if_one(t_table *table, t_philo *current_philo)
 {
 	long long	dinner_start;
 
+	pthread_mutex_lock(&table->death);
 	if (table->nbr_of_philo == 1)
 	{
-		pthread_mutex_lock(&table->death);
+		pthread_mutex_lock(&current_philo->dead_lock);
 		pthread_mutex_lock(&table->is_writing);
 		usleep(current_philo->time_to_die * 1000);
 		current_philo->is_dead = true;
@@ -46,9 +52,11 @@ static int	check_if_one(t_table *table, t_philo *current_philo)
 		printf("Death cause: loneliness :(\n");
 		table->dinner_end = true;
 		pthread_mutex_unlock(&table->is_writing);
+		pthread_mutex_unlock(&current_philo->dead_lock);
 		pthread_mutex_unlock(&table->death);
 		return (1);
 	}
+	pthread_mutex_unlock(&table->death);
 	return (0);
 }
 

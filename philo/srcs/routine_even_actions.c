@@ -6,7 +6,7 @@
 /*   By: crea <crea@student.42roma.it>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 12:56:45 by crea              #+#    #+#             */
-/*   Updated: 2024/05/22 17:31:12 by crea             ###   ########.fr       */
+/*   Updated: 2024/05/22 22:14:08 by crea             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,12 @@ static int	check_first_meal(t_table *table, t_philo *current_philo)
 
 	if (current_philo->first_meal && current_philo->index % 2 == 0)
 	{
-		pthread_mutex_lock(&table->death);
 		current_time = get_time();
 		if (current_time - table->dinner_start >= current_philo->time_to_die)
 		{
+			pthread_mutex_lock(&table->death);
 			if (table->dinner_end)
 			{
-				pthread_mutex_unlock(&table->is_writing);
 				pthread_mutex_unlock(&table->death);
 				return (0);
 			}
@@ -32,7 +31,6 @@ static int	check_first_meal(t_table *table, t_philo *current_philo)
 			pthread_mutex_unlock(&table->death);
 			return (0);
 		}
-		pthread_mutex_unlock(&table->death);
 	}
 	return (1);
 }
@@ -43,12 +41,10 @@ void	eating_even(t_table *table, t_philo *current_philo)
 		return ;
 	pthread_mutex_lock(&current_philo->right_fork);
 	pthread_mutex_lock(&current_philo->next->right_fork);
-	pthread_mutex_lock(&current_philo->dead_lock);
 	if (!check_first_meal(table, current_philo))
 	{
 		pthread_mutex_unlock(&current_philo->right_fork);
 		pthread_mutex_unlock(&current_philo->next->right_fork);
-		pthread_mutex_unlock(&current_philo->dead_lock);
 		return ;
 	}
 	pthread_mutex_lock(&table->is_writing);
@@ -57,13 +53,11 @@ void	eating_even(t_table *table, t_philo *current_philo)
 		pthread_mutex_unlock(&table->is_writing);
 		pthread_mutex_unlock(&current_philo->right_fork);
 		pthread_mutex_unlock(&current_philo->next->right_fork);
-		pthread_mutex_unlock(&current_philo->dead_lock);
 		return ;
 	}
 	eating_even_utils(table, current_philo);
 	pthread_mutex_unlock(&current_philo->right_fork);
 	pthread_mutex_unlock(&current_philo->next->right_fork);
-	pthread_mutex_unlock(&current_philo->dead_lock);
 }
 
 void	sleeping_even(t_table *table, t_philo *current_philo)

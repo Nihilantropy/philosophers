@@ -6,7 +6,7 @@
 /*   By: crea <crea@student.42roma.it>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 14:39:18 by crea              #+#    #+#             */
-/*   Updated: 2024/05/20 16:12:49 by crea             ###   ########.fr       */
+/*   Updated: 2024/05/22 20:02:09 by crea             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	print_list(t_philo *philo)
 {
 	t_philo	*current;
-	
+
 	if (!philo)
 		return ;
 	current = philo;

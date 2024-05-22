@@ -6,7 +6,7 @@
 /*   By: crea <crea@student.42roma.it>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/22 16:10:36 by crea              #+#    #+#             */
-/*   Updated: 2024/05/22 17:22:26 by crea             ###   ########.fr       */
+/*   Updated: 2024/05/22 21:51:23 by crea             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,18 +15,18 @@
 void	check_meals_utils(t_table *table)
 {
 	pthread_mutex_lock(&table->death);
+	pthread_mutex_lock(&table->is_writing);
 	if (table->dinner_end)
 	{
-		pthread_mutex_unlock(&table->is_writing);
 		pthread_mutex_unlock(&table->death);
+		pthread_mutex_unlock(&table->is_writing);
 		return ;
 	}
 	table->dinner_end = true;
-	pthread_mutex_lock(&table->is_writing);
 	printf("All philo have eaten %d meals\n", table->nbr_of_meals);
 	printf("Dinner have ended at %llu\n", get_time() - table->dinner_start);
-	pthread_mutex_unlock(&table->is_writing);
 	pthread_mutex_unlock(&table->death);
+	pthread_mutex_unlock(&table->is_writing);
 }
 
 void	check_death_utils(t_table *table, t_philo *current_philo,
@@ -36,10 +36,12 @@ void	check_death_utils(t_table *table, t_philo *current_philo,
 
 	pthread_mutex_lock(&table->death);
 	pthread_mutex_lock(&table->is_writing);
+	pthread_mutex_lock(&current_philo->dead_lock);
 	if (table->dinner_end)
 	{
-		pthread_mutex_unlock(&table->is_writing);
 		pthread_mutex_unlock(&table->death);
+		pthread_mutex_unlock(&table->is_writing);
+		pthread_mutex_unlock(&current_philo->dead_lock);
 		return ;
 	}
 	index = current_philo->index;
@@ -48,6 +50,7 @@ void	check_death_utils(t_table *table, t_philo *current_philo,
 	table->dinner_end = true;
 	printf("Dinner have ended at %llu\n", current_time - table->dinner_start);
 	printf("Death check\n");
-	pthread_mutex_unlock(&table->is_writing);
 	pthread_mutex_unlock(&table->death);
+	pthread_mutex_unlock(&table->is_writing);
+	pthread_mutex_unlock(&current_philo->dead_lock);
 }
