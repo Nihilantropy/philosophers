@@ -6,7 +6,7 @@
 /*   By: crea <crea@student.42roma.it>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 12:27:02 by crea              #+#    #+#             */
-/*   Updated: 2024/05/22 17:31:02 by crea             ###   ########.fr       */
+/*   Updated: 2024/05/23 15:35:51 by crea             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,6 @@ typedef struct s_philo
 	t_bool			is_thinking;
 	t_bool			is_eating;
 	t_bool			is_dead;
-	pthread_mutex_t	dead_lock;
 	pthread_mutex_t	right_fork;
 	struct s_philo	*next;
 	struct s_philo	*prev;
@@ -55,6 +54,7 @@ typedef struct s_table
 	t_bool				first_meal;
 	pthread_mutex_t		is_sitting;
 	pthread_mutex_t		is_writing;
+	pthread_mutex_t		eat_count_lock;
 	pthread_mutex_t		death;
 	long long			dinner_start;
 	t_bool				dinner_end;
@@ -87,37 +87,25 @@ int			create_philo_list(t_philo **philo, char **argv);
 void		print_list(t_philo *philo);
 void		free_list(t_philo **philo);
 
-/* The even and odd refers to the number of philosophers, not their index */
-/* routines */
-void		*philo_routine_even(void *arg);
-void		*philo_routine_odd(void *arg);
+/* routine */
+void		*philo_routine(void *arg);
 
 /* routine observer */
-void		*observer(void *arg);
+void		*observer_routine(void *arg);
 
 /* routine observer utils */
 void		check_meals_utils(t_table *table);
 void		check_death_utils(t_table *table, t_philo *current_philo,
 				long long current_time);
 
-/* routine even actions */
-void		eating_even(t_table *table, t_philo *current_philo);
-void		sleeping_even(t_table *table, t_philo *current_philo);
-void		thinking_even(t_table *table, t_philo *current_philo);
+/* routine actions */
+void		eating(t_table *table, t_philo *current_philo);
+void		sleeping(t_table *table, t_philo *current_philo);
+void		thinking(t_table *table, t_philo *current_philo);
 
-/* routine even actions utils */
-void		check_first_meal_even_utils(t_table *table, t_philo *current_philo,
+/* routine actions utils */
+void		check_first_meal_utils(t_table *table, t_philo *current_philo,
 				long long current_time);
-void		eating_even_utils(t_table *table, t_philo *current_philo);
-
-/* routine odd actions */
-void		eating_odd(t_table *table, t_philo *current_philo);
-void		sleeping_odd(t_table *table, t_philo *current_philo);
-void		thinking_odd(t_table *table, t_philo *current_philo);
-
-/* routine odd actions utils */
-void		check_first_meal_odd_utils(t_table *table, t_philo *current_philo,
-				long long current_time);
-void		eating_odd_utils(t_table *table, t_philo *current_philo);
+void		eating_utils(t_table *table, t_philo *current_philo);
 
 #endif

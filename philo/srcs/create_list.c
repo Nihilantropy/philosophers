@@ -6,7 +6,7 @@
 /*   By: crea <crea@student.42roma.it>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 14:19:06 by crea              #+#    #+#             */
-/*   Updated: 2024/05/22 16:47:21 by crea             ###   ########.fr       */
+/*   Updated: 2024/05/23 14:11:34 by crea             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,7 @@
 
 int	init_mutex(t_philo *philo)
 {
-	if (pthread_mutex_init(&philo->dead_lock, NULL)
-		|| pthread_mutex_init(&philo->right_fork, NULL))
+	if (pthread_mutex_init(&philo->right_fork, NULL))
 		return (0);
 	return (1);
 }

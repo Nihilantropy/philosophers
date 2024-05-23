@@ -6,7 +6,7 @@
 /*   By: crea <crea@student.42roma.it>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 14:39:18 by crea              #+#    #+#             */
-/*   Updated: 2024/05/22 20:02:09 by crea             ###   ########.fr       */
+/*   Updated: 2024/05/23 14:12:03 by crea             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,6 @@ void	free_list(t_philo **philo)
 	while (1)
 	{
 		next = current->next;
-		pthread_mutex_destroy(&current->dead_lock);
 		pthread_mutex_destroy(&current->right_fork);
 		free(current);
 		if (next == *philo)

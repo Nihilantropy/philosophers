@@ -3,23 +3,17 @@ NAME		= philo
 PHILO_DIR	= ./srcs
 PHILO_HEAD	= ./include
 
-SRCS		= main.c main_utils.c checks.c checks_utils.c init_table.c create_list.c create_list_utils.c routine_even.c routine_odd.c routine_observer.c \
-				routine_observer_utils.c routine_even_actions.c routine_even_actions_utils.c routine_odd_actions.c routine_odd_actions_utils.c
+SRCS		= main.c main_utils.c checks.c checks_utils.c init_table.c create_list.c create_list_utils.c routine_philo.c routine_observer.c \
+				routine_observer_utils.c routine_actions.c routine_actions_utils.c
 
 OBJS		= $(patsubst %.c, $(PHILO_DIR)/%.o, $(SRCS))
 
-LIBFT_DIR	= ./libft
-LIBFT		= libft.a
-
-PRINTF_DIR	= ./ft_printf
-PRINTF_LIB	= libft_printf.a
-
 CC			= gcc
-CFLAGS		= -Wall -Wextra -Werror -pthread -fsanitize=thread -g
+CFLAGS		= -Wall -Wextra -Werror -pthread -g #-fsanitize=thread
 RM = rm -f
 
 # Include directory for header files
-INC 		= -I$(PHILO_HEAD) -I$(LIBFT_DIR) -I$(PRINTF_DIR)
+INC 		= -I$(PHILO_HEAD)
 
 # Compilation rule for the program
 $(NAME): $(OBJS)
